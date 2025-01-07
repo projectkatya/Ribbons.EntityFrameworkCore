@@ -1,18 +1,21 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Ribbons.EntityFrameworkCore
 {
     public abstract class DatabaseManager<TDatabase> : IDatabaseManager<TDatabase> where TDatabase : Database
     {
-        public TDatabase GetDatabase(string databaseName = null)
+        public TDatabase GetDatabase(string configurationName = null)
         {
-            throw new NotImplementedException();
+            return CreateInstance(GetConfiguration(configurationName));
         }
 
-        public Task<TDatabase> GetDatabaseAsync(string databaseName = null)
+        public async Task<TDatabase> GetDatabaseAsync(string configurationName = null)
         {
-            throw new NotImplementedException();
+            return CreateInstance(await GetConfigurationAsync(configurationName));
         }
+
+        protected abstract DatabaseConfig GetConfiguration(string configurationName = null);
+        protected abstract Task<DatabaseConfig> GetConfigurationAsync(string configurationName = null);
+        protected abstract TDatabase CreateInstance(DatabaseConfig configuration);
     }
 }
